@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McDonald's | Order Online & Delivery</title>
+  
+  <!-- Google Fonts: Nunito (Headings) & Inter (Body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- DESIGN SYSTEM --- */
+    :root {
+      --red: #DA291C;
+      --yellow: #FFC72C;
+      --dark: #1A1A1A;
+      --white: #FFFFFF;
+      --light-gray: #F5F5F5;
+      --font-heading: 'Nunito', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: var(--font-body);
+      color: var(--dark);
+      background-color: var(--light-gray);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 900; }
+    img { max-width: 100%; height: auto; display: block; }
+    
+    /* --- UTILITIES & BUTTONS --- */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 28px; font-family: var(--font-heading); font-size: 1.1rem;
+      border-radius: var(--radius); text-decoration: none; border: none;
+      cursor: pointer; min-height: 48px; /* CRO: Mobile Tap Target */
+      transition: var(--transition); font-weight: 800;
+    }
+    
+    .btn-primary { background-color: var(--yellow); color: var(--dark); box-shadow: 0 4px 10px rgba(255, 199, 44, 0.3); }
+    .btn-primary:hover { background-color: #e6b125; transform: translateY(-2px); }
+    
+    .btn-secondary { background-color: var(--red); color: var(--white); box-shadow: 0 4px 10px rgba(218, 41, 28, 0.3); }
+    .btn-secondary:hover { background-color: #c42318; transform: translateY(-2px); }
+
+    /* --- STICKY NAV --- */
+    header.navbar {
+      background: var(--white);
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 15px 0;
+    }
+    .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-family: var(--font-heading); font-size: 1.8rem; color: var(--red); text-decoration: none; font-weight: 900; letter-spacing: -1px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--red); }
+    
+    @media (max-width: 768px) {
+      .nav-links li:not(.cta-nav) { display: none; } /* Hide links on mobile, keep CTA */
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=80') center/cover;
+      height: 70vh; min-height: 500px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      color: var(--white);
+    }
+    .hero-content h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); line-height: 1.1; }
+    .hero-content p { font-size: 1.2rem; margin-bottom: 30px; font-weight: 500; }
+    
+    /* CRO: Urgency Badge */
+    .urgency-badge {
+      display: inline-block; background: var(--red); color: var(--white);
+      padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 700;
+      margin-bottom: 15px; animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    /* --- MENU SECTION (DYNAMIC) --- */
+    .menu-section { padding: 80px 0; background: var(--light-gray); }
+    .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 40px; color: var(--dark); }
+    
+    /* Filter Tabs */
+    .filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+    .filter-btn {
+      background: var(--white); border: 2px solid transparent; padding: 10px 24px;
+      border-radius: 30px; font-weight: 700; cursor: pointer; transition: var(--transition);
+      font-family: var(--font-heading); font-size: 1rem; color: var(--dark);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .filter-btn:hover { border-color: var(--yellow); }
+    .filter-btn.active { background: var(--yellow); border-color: var(--yellow); }
+
+    /* Grid Layout */
+    .menu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    /* Menu Card */
+    .card {
+      background: var(--white); border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); transition: var(--transition);
+      display: flex; flex-direction: column; position: relative;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    
+    /* CRO: Most Popular Badge */
+    .popular-badge {
+      position: absolute; top: 15px; left: 15px; background: var(--red); color: var(--white);
+      padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; font-family: var(--font-heading);
+    }
+
+    .card-img { width: 100%; height: 220px; object-fit: cover; }
+    .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-title { font-size: 1.4rem; margin-bottom: 5px; }
+    .card-meta { display: flex; justify-content: space-between; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+    .card-price { font-size: 1.5rem; font-weight: 900; color: var(--red); font-family: var(--font-heading); }
+    .card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+    .btn-add {
+      background: var(--yellow); border: none; width: 40px; height: 40px; border-radius: 50%;
+      font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: var(--transition);
+      display: flex; justify-content: center; align-items: center; color: var(--dark);
+    }
+    .btn-add:hover { transform: scale(1.1); background: #e6b125; }
+
+    /* --- APP DOWNLOAD BANNER --- */
+    .app-banner { background: var(--yellow); padding: 60px 0; overflow: hidden; }
+    .app-banner .container { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .app-text { flex: 1; min-width: 300px; }
+    .app-text h2 { font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); }
+    .app-text p { font-size: 1.1rem; margin-bottom: 25px; }
+    
+    /* --- FOOTER --- */
+    footer { background: var(--dark); color: var(--white); padding: 60px 0 30px; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+    .footer-col h4 { color: var(--yellow); margin-bottom: 20px; font-size: 1.2rem; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col a { color: #ccc; text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { text-align: center; border-top: 1px solid #333; padding-top: 20px; font-size: 0.9rem; color: #888; }
+  </style>
+</head>
+<body>
+
+  <!-- STICKY NAVIGATION -->
+  <header class="navbar">
+    <div class="container">
+      <a href="#" class="logo">McClone's</a>
+      <ul class="nav-links">
+        <li><a href="#menu">Our Menu</a></li>
+        <li><a href="#deals">Deals</a></li>
+        <li><a href="#locations">Locations</a></li>
+        <li class="cta-nav"><a href="#menu" class="btn btn-primary">Order Now</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- HERO SECTION (Food-Forward & High Urgency) -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="urgency-badge">🔥 Deal Ends in 02:45:10</div>
+      <h1>Crave it? Get it.</h1>
+      <p>Free delivery on your first order. Delivered hot and fresh.</p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a href="#menu" class="btn btn-primary">Order Delivery</a>
+        <a href="#app" class="btn btn-secondary">Get the App</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DYNAMIC MENU SECTION -->
+  <section id="menu" class="menu-section">
+    <div class="container">
+      <h2 class="section-title">Explore Our Menu</h2>
+      
+      <!-- Filter Buttons -->
+      <div class="filters" id="filter-container">
+        <button class="filter-btn active" data-category="all">All Items</button>
+        <button class="filter-btn" data-category="burgers">Burgers</button>
+        <button class="filter-btn" data-category="sides">Sides</button>
+        <button class="filter-btn" data-category="drinks">Drinks</button>
+      </div>
+
+      <!-- Render Grid -->
+      <div class="menu-grid" id="menu-grid">
+        <!-- JS will inject cards here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- APP DOWNLOAD BANNER -->
+  <section id="app" class="app-banner">
+    <div class="container">
+      <div class="app-text">
+        <h2>Exclusive App Deals</h2>
+        <p>Download the app to access secret menu items, skip the queue, and earn rewards points on every single order.</p>
+        <button class="btn btn-secondary">Download Free App</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>About Us</h4>
+          <ul>
+            <li><a href="#">Our History</a></li>
+            <li><a href="#">Leadership Team</a></li>
+            <li><a href="#">Values in Action</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Careers</h4>
+          <ul>
+            <li><a href="#">Corporate Info</a></li>
+            <li><a href="#">Restaurant Jobs</a></li>
+            <li><a href="#">Apply Now</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Feedback</a></li>
+            <li><a href="#">Store Locator</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 McClone's Corporation. All Rights Reserved. (Demo Project)
+      </div>
+    </div>
+  </footer>
+
+  <!-- PHASE 3: JAVASCRIPT & DYNAMIC DATA -->
+  <script>
+    // 1. Mock JSON Data (Menu Items)
+    const menuData =[
+      {
+        id: 1,
+        name: "Double Cheese Smash",
+        price: "$6.49",
+        calories: "540 kcal",
+        category: "burgers",
+        popular: true,
+        img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 2,
+        name: "Classic Crispy Chicken",
+        price: "$5.99",
+        calories: "470 kcal",
+        category: "burgers",
+        popular: false,
+        img: "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 3,
+        name: "World Famous Fries",
+        price: "$3.29",
+        calories: "320 kcal",
+        category: "sides",
+        popular: true,
+        img: "https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 4,
+        name: "10pc Golden Nuggets",
+        price: "$4.99",
+        calories: "420 kcal",
+        category: "sides",
+        popular: false,
+        img: "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 5,
+        name: "Ice Cold Cola",
+        price: "$1.99",
+        calories: "210 kcal",
+        category: "drinks",
+        popular: false,
+        img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 6,
+        name: "Vanilla Shake",
+        price: "$3.49",
+        calories: "510 kcal",
+        category: "drinks",
+        popular: true,
+        img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    // 2. DOM Elements
+    const menuGrid = document.getElementById('menu-grid');
+    const filterContainer = document.getElementById('filter-container');
+
+    // 3. Render Menu Function
+    function renderMenu(items) {
+      menuGrid.innerHTML = ''; // Clear existing
+      
+      items.forEach(item => {
+        // Create Card HTML
+        const cardHTML = `
+          <div class="card">
+            ${item.popular ? '<div class="popular-badge">Most Popular</div>' : ''}
+            <img src="${item.img}" alt="${item.name}" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">${item.name}</h3>
+              <div class="card-meta">
+                <span>${item.calories}</span>
+                <span>Allergens Info ⓘ</span>
+              </div>
+              <div class="card-actions">
+                <span class="card-price">${item.price}</span>
+                <button class="btn-add" aria-label="Add to cart" onclick="addToCart('${item.name}')">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+        menuGrid.insertAdjacentHTML('beforeend', cardHTML);
+      });
+    }
+
+    // 4. Filter Logic
+    filterContainer.addEventListener('click', (e) => {
+      if(e.target.classList.contains('filter-btn')) {
+        // Update active class
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Filter Data
+        const category = e.target.getAttribute('data-category');
+        if(category === 'all') {
+          renderMenu(menuData);
+        } else {
+          const filteredData = menuData.filter(item => item.category === category);
+          renderMenu(filteredData);
+        }
+      }
+    });
+
+    // 5. Add to Cart Mock Logic
+    function addToCart(itemName) {
+      // In a real app, this would update a cart state and trigger a notification
+      alert(`🍔 ${itemName} added to your cart!`);
+    }
+
+    // 6. Init
+    renderMenu(menuData);
+    
+  </script>
+</body>
+</html>
